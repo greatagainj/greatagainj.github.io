@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="新的一天, RString">
+    <meta name="keywords" content="日本支付-扫码支付背后的支付方式及合规, RString">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>新的一天 | RString</title>
+    <title>日本支付-扫码支付背后的支付方式及合规 | RString</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -308,12 +308,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/21.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/7.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">新的一天</h1>
+                    <h1 class="description center-align post-title">日本支付-扫码支付背后的支付方式及合规</h1>
                 </div>
             </div>
         </div>
@@ -438,8 +438,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E9%9A%8F%E7%AC%94/">
-                                <span class="chip bg-color">随笔</span>
+                            <a href="/tags/%E4%B8%9A%E5%8A%A1%E6%9D%82%E8%B0%88/">
+                                <span class="chip bg-color">业务杂谈</span>
                             </a>
                         
                     </div>
@@ -454,7 +454,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2018-04-14
+                    2019-04-12
                 </div>
                 
 
@@ -470,7 +470,17 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <p>一直想给小伙伴们介绍一下日本的扫码支付，但是，因为题目过于庞大及涉及到的东西也太多，苦于自己所知及水平有限，一直处于在准备阶段。越准备发现需要了解的东西就越多。所以，打算分批分阶段一点点给大家分享一下。</p>
+<p>首先，和小伙伴们聊一聊日本的扫码支付的背后的支付方式及一些合规的话题。搞支付的小伙伴估计都知道，扫码支付实际上是借助于现有的如银联借记卡，信用卡等支付方式来完成支付的一种新的支付媒介。在日本，现在大多数扫码支付公司都支持信用卡绑定支付，银行转账，现金充值。</p>
+<h2 id="信用卡绑定支付"><a href="#信用卡绑定支付" class="headerlink" title="信用卡绑定支付"></a>信用卡绑定支付</h2><p>信用卡绑定支付估计不用多介绍，和国内是一样的。用户事先将自己的信用卡绑定到扫码支付App上。之后可以直接通过扫码完成信用卡支付。这种方式可以理解为信用卡线下支付的媒介由塑料卡片变为了QR码。背后的整个信息流和资金流仍然利用的是传统的信用卡系统和模式。</p>
+<p>因为用户将信用卡信息登录到了扫码支付的App上，所以，扫码支付公司要作为日语叫“クレジットカード番号等契約締結事業者”的一个从业者到产业经济省进行登录。登录的时候，产业经济省会有对登录申请者进行严格的审查。例如, PCI DSS是否合格等。已登录的从业者可以在这个<a href="https://link.zhihu.com/?target=https%3A//www.meti.go.jp/policy/economy/consumer/credit/pdf/r105credittorokuitiran.pdf">产业经济省的网站</a>上查到。</p>
+<h2 id="银行转账"><a href="#银行转账" class="headerlink" title="银行转账"></a>银行转账</h2><p>银行转账和国内的快捷支付是一样的。用户先登录银行账号到App，在登录过程中完成用户认证。之后，用户可以直接通过扫码直接从自己的绑定的银行账号进行扣款消费。但是，日本的银行在这方面起步还是比较晚的。整个绑定和消费过程的用户体验特别不好痛点特别多。例如，绑定的时候，必须要跳转到银行的页面上去。而且绑定页面和流程也不统一。再有就是实际消费的是时候，处理速度特别慢。</p>
+<p>合规这一块，扫码支付公司必须作为日语叫“電子決済等代行業者”的从业者到金融厅进行登录。登录的难度据说也是特别的大。而且，如果扫码支付App还支持提现的功能的话，公司还要作为“資金移動業者”从业者到金融厅进行登录。这要求公司要有100%以上的担保金。</p>
+<h2 id="现金充值"><a href="#现金充值" class="headerlink" title="现金充值"></a>现金充值</h2><p>日本仍然是一个现金为王的国家。任何的支付相关服务想要获得广大的市场份额，现金充值的也是不得不支持的。所以，大多数扫码支付公司也提供了现金充值的方法。这里就不多做说明了。</p>
+<p>现金充值涉及到预付卡的合规问题。从业者必须作为日语叫“前払式支払手段発行者”到金融厅进行登录。这个登录虽然没有审查。但是，要求从业者有50%以上的担保金。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>大家可以看到，对于支付公司来说。和国内很大的不同就是日本的合规特别的复杂。一个服务可能要涉及到好几个法律法规。</p>
+<p>转载自逼乎<a href="https://www.zhihu.com/people/duleitony" target="_blank" rel="noopener">duleitony</a></p>
+
             </div>
             <hr/>
 
@@ -495,7 +505,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://rstring.top/2018/04/14/%E6%96%B0%E7%9A%84%E4%B8%80%E5%A4%A9/">http://rstring.top/2018/04/14/%E6%96%B0%E7%9A%84%E4%B8%80%E5%A4%A9/</a>
+                    <a href="http://rstring.top/2019/04/12/%E6%97%A5%E6%9C%AC%E6%94%AF%E4%BB%98-%E6%89%AB%E7%A0%81%E6%94%AF%E4%BB%98%E8%83%8C%E5%90%8E%E7%9A%84%E6%94%AF%E4%BB%98%E6%96%B9%E5%BC%8F%E5%8F%8A%E5%90%88%E8%A7%84/">http://rstring.top/2019/04/12/%E6%97%A5%E6%9C%AC%E6%94%AF%E4%BB%98-%E6%89%AB%E7%A0%81%E6%94%AF%E4%BB%98%E8%83%8C%E5%90%8E%E7%9A%84%E6%94%AF%E4%BB%98%E6%96%B9%E5%BC%8F%E5%8F%8A%E5%90%88%E8%A7%84/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -533,8 +543,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E9%9A%8F%E7%AC%94/">
-                                    <span class="chip bg-color">随笔</span>
+                                <a href="/tags/%E4%B8%9A%E5%8A%A1%E6%9D%82%E8%B0%88/">
+                                    <span class="chip bg-color">业务杂谈</span>
                                 </a>
                             
                         </div>
@@ -706,25 +716,25 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2018/04/14/%E4%B8%80%E6%9D%A1SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E5%BE%97%E5%BE%88%E6%85%A2%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F/">
+                <a href="/2019/05/14/%E6%97%A5%E6%9C%AC%E6%94%AF%E4%BB%98-%E7%94%9F%E6%B4%BB%E7%BC%B4%E8%B4%B9/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="一条SQL语句执行得很慢的原因有哪些？">
+                        <img src="/medias/featureimages/6.jpg" class="responsive-img" alt="日本支付-生活缴费">
                         
-                        <span class="card-title">一条SQL语句执行得很慢的原因有哪些？</span>
+                        <span class="card-title">日本支付-生活缴费</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            说实话，这个问题可以涉及到 MySQL 的很多核心知识，可以扯出一大堆，就像要考你计算机网络的知识时，问你“输入URL回车之后，究竟发生了什么”一样，看看你能说出多少了。
-一、开始装逼：分类讨论一条 SQL 语句执行的很慢，那是每次执行都很
+                            说到支付，就不可能不谈一个我们日常生活中的一个常见也是一个比较重要的场景。那就是生活缴费场景。这里说的生活缴费，估计我也不用过多的解释，主要就是指水费，电费，煤气费和一些税金的缴纳。
+缴费方式和处理流程现金 - 便利店支付估计大家也知道，岛
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2018-04-14
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-05-14
                         </span>
                         <span class="publish-author">
                             
@@ -737,8 +747,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/sql/">
-                        <span class="chip bg-color">sql</span>
+                    <a href="/tags/%E4%B8%9A%E5%8A%A1%E6%9D%82%E8%B0%88/">
+                        <span class="chip bg-color">业务杂谈</span>
                     </a>
                     
                 </div>
@@ -749,27 +759,27 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2018/04/14/%E6%96%B0%E7%9A%84%E4%B8%80%E5%A4%A9/">
+                <a href="/2018/12/12/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E4%BA%8B%E5%8A%A1--Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="新的一天">
+                        <img src="/medias/featureimages/13.jpg" class="responsive-img" alt="深入理解事务--Spring事务的传播机制">
                         
-                        <span class="card-title">新的一天</span>
+                        <span class="card-title">深入理解事务--Spring事务的传播机制</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
+                            事务的嵌套概念所谓事务的嵌套就是两个事务方法之间相互调用。spring事务开启 ，或者是基于接口的或者是基于类的代理被创建（注意一定要是代理，不能手动new 一个对象，并且此类（有无接口都行）一定要被代理——spring中的bean只要纳入
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2018-04-14
+                                <i class="far fa-clock fa-fw icon-date"></i>2018-12-12
                             </span>
                         <span class="publish-author">
                             
@@ -779,12 +789,11 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E9%9A%8F%E7%AC%94/">
-                        <span class="chip bg-color">随笔</span>
+                    <a href="/tags/%E4%BA%8B%E5%8A%A1/">
+                        <span class="chip bg-color">事务</span>
                     </a>
                     
                 </div>

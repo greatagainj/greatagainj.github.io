@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="新的一天, RString">
+    <meta name="keywords" content="深入理解事务--Spring事务的传播机制, RString">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>新的一天 | RString</title>
+    <title>深入理解事务--Spring事务的传播机制 | RString</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -308,12 +308,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/21.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">新的一天</h1>
+                    <h1 class="description center-align post-title">深入理解事务--Spring事务的传播机制</h1>
                 </div>
             </div>
         </div>
@@ -438,8 +438,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/%E9%9A%8F%E7%AC%94/">
-                                <span class="chip bg-color">随笔</span>
+                            <a href="/tags/%E4%BA%8B%E5%8A%A1/">
+                                <span class="chip bg-color">事务</span>
                             </a>
                         
                     </div>
@@ -454,7 +454,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2018-04-14
+                    2018-12-12
                 </div>
                 
 
@@ -470,7 +470,128 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h1 id="事务的嵌套概念"><a href="#事务的嵌套概念" class="headerlink" title="事务的嵌套概念"></a>事务的嵌套概念</h1><p>所谓事务的嵌套就是两个事务方法之间相互调用。spring事务开启 ，或者是基于接口的或者是基于类的代理被创建（<strong>注意一定要是代理，不能手动new 一个对象，并且此类（有无接口都行）一定要被代理——spring中的bean只要纳入了IOC管理都是被代理的</strong>）。所以在同一个类中一个方法调用另一个方法有事务的方法，事务是不会起作用的。</p>
+<p>###</p>
+<p>Spring默认情况下会对运行期例外(RunTimeException)，即uncheck异常，进行事务回滚。</p>
+<p>如果遇到checked异常就不回滚。<br>如何改变默认规则：</p>
+<p>1 让checked例外也回滚：在整个方法前加上 @Transactional(rollbackFor=Exception.class)</p>
+<p>2 让unchecked例外不回滚： @Transactional(notRollbackFor=RunTimeException.class)</p>
+<p>3 不需要事务管理的(只查询的)方法：@Transactional(propagation=Propagation.NOT_SUPPORTED)</p>
+<p>上面三种方式也可在xml配置</p>
+<h1 id="spring事务传播属性"><a href="#spring事务传播属性" class="headerlink" title="spring事务传播属性"></a>spring事务传播属性</h1><p> 在 spring的 TransactionDefinition接口中一共定义了六种事务传播属性：</p>
+<p>PROPAGATION_REQUIRED – 支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。<br>PROPAGATION_SUPPORTS – 支持当前事务，如果当前没有事务，就以非事务方式执行。<br>PROPAGATION_MANDATORY – 支持当前事务，如果当前没有事务，就抛出异常。<br>PROPAGATION_REQUIRES_NEW – 新建事务，如果当前存在事务，把当前事务挂起。<br>PROPAGATION_NOT_SUPPORTED – 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。<br>PROPAGATION_NEVER – 以非事务方式执行，如果当前存在事务，则抛出异常。<br>PROPAGATION_NESTED – 如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与PROPAGATION_REQUIRED类似的操作。<br>前六个策略类似于EJB CMT，第七个（PROPAGATION_NESTED）是Spring所提供的一个特殊变量。<br>它要求事务管理器或者使用JDBC 3.0 Savepoint API提供嵌套事务行为（如Spring的DataSourceTransactionManager） </p>
+<p>举例浅析Spring嵌套事务</p>
+<p><strong>ServiceA#methodA(我们称之为外部事务)，ServiceB#methodB(我们称之为外部事务)</strong></p>
+<p>​      ServiceA {</p>
+<ol>
+<li></li>
+<li>void methodA() {</li>
+<li>ServiceB.methodB();</li>
+<li>}</li>
+<li></li>
+<li>}</li>
+<li></li>
+<li>ServiceB {</li>
+<li></li>
+<li>void methodB() {</li>
+<li>}</li>
+<li></li>
+<li>}</li>
+</ol>
+<h2 id="PROPAGATION-REQUIRED"><a href="#PROPAGATION-REQUIRED" class="headerlink" title="PROPAGATION_REQUIRED"></a>PROPAGATION_REQUIRED</h2><p>假如当前正要执行的事务不在另外一个事务里，那么就起一个新的事务<br>比如说，ServiceB.methodB的事务级别定义为PROPAGATION_REQUIRED, 那么由于执行ServiceA.methodA的时候</p>
+<p> 1、如果ServiceA.methodA已经起了事务，这时调用ServiceB.methodB，ServiceB.methodB看到自己已经运行在ServiceA.methodA的事务内部，就不再起新的事务。这时只有外部事务并且他们是共用的，所以这时ServiceA.methodA或者ServiceB.methodB无论哪个发生异常methodA和methodB作为一个整体都将一起回滚。</p>
+<p> 2、如果ServiceA.methodA没有事务，ServiceB.methodB就会为自己分配一个事务。这样，在ServiceA.methodA中是没有事务控制的。只是在ServiceB.methodB内的任何地方出现异常，ServiceB.methodB将会被回滚，不会引起ServiceA.methodA的回滚</p>
+<h2 id="PROPAGATION-SUPPORTS"><a href="#PROPAGATION-SUPPORTS" class="headerlink" title="PROPAGATION_SUPPORTS"></a>PROPAGATION_SUPPORTS</h2><p>如果当前在事务中，即以事务的形式运行，如果当前不再一个事务中，那么就以非事务的形式运行 </p>
+<h2 id="PROPAGATION-MANDATORY"><a href="#PROPAGATION-MANDATORY" class="headerlink" title="PROPAGATION_MANDATORY"></a>PROPAGATION_MANDATORY</h2><p>必须在一个事务中运行。也就是说，他只能被一个父事务调用。否则，他就要抛出异常</p>
+<h2 id="PROPAGATION-REQUIRES-NEW"><a href="#PROPAGATION-REQUIRES-NEW" class="headerlink" title="PROPAGATION_REQUIRES_NEW"></a>PROPAGATION_REQUIRES_NEW</h2><p>启动一个新的, 不依赖于环境的 “内部” 事务. 这个事务将被完全 commited 或 rolled back 而不依赖于外部事务, 它拥有自己的隔离范围, 自己的锁, 等等. 当内部事务开始执行时, 外部事务将被挂起, 内务事务结束时, 外部事务将继续执行. </p>
+<p> 比如我们设计ServiceA.methodA的事务级别为PROPAGATION_REQUIRED，ServiceB.methodB的事务级别为PROPAGATION_REQUIRES_NEW，那么当执行到ServiceB.methodB的时候，ServiceA.methodA所在的事务就会挂起，ServiceB.methodB会起一个新的事务，等待ServiceB.methodB的事务完成以后，他才继续执行。他与PROPAGATION_REQUIRED 的事务区别在于事务的回滚程度了。因为ServiceB.methodB是新起一个事务，那么就是存在两个不同的事务。</p>
+<p>1、如果ServiceB.methodB已经提交，那么ServiceA.methodA失败回滚，ServiceB.methodB是不会回滚的。</p>
+<p>2、如果ServiceB.methodB失败回滚，如果他抛出的异常被ServiceA.methodA的try..catch捕获并处理，ServiceA.methodA事务仍然可能提交；如果他抛出的异常未被ServiceA.methodA捕获处理，ServiceA.methodA事务将回滚。</p>
+<p>使用场景：</p>
+<p>不管业务逻辑的service是否有异常，Log Service都应该能够记录成功，所以Log Service的传播属性可以配为此属性。最下面将会贴出配置代码。</p>
+<h2 id="PROPAGATION-NOT-SUPPORTED"><a href="#PROPAGATION-NOT-SUPPORTED" class="headerlink" title="PROPAGATION_NOT_SUPPORTED"></a>PROPAGATION_NOT_SUPPORTED</h2><p>当前不支持事务。比如ServiceA.methodA的事务级别是PROPAGATION_REQUIRED ，而ServiceB.methodB的事务级别是PROPAGATION_NOT_SUPPORTED ，那么当执行到ServiceB.methodB时，ServiceA.methodA的事务挂起，而他以非事务的状态运行完，再继续ServiceA.methodA的事务。</p>
+<h2 id="PROPAGATION-NEVER"><a href="#PROPAGATION-NEVER" class="headerlink" title="PROPAGATION_NEVER"></a>PROPAGATION_NEVER</h2><p>不能在事务中运行。假设ServiceA.methodA的事务级别是PROPAGATION_REQUIRED， 而ServiceB.methodB的事务级别是PROPAGATION_NEVER ，那么ServiceB.methodB就要抛出异常了。 </p>
+<h2 id="PROPAGATION-NESTED"><a href="#PROPAGATION-NESTED" class="headerlink" title="PROPAGATION_NESTED"></a>PROPAGATION_NESTED</h2><p>开始一个 “嵌套的” 事务,  它是已经存在事务的一个真正的子事务. 潜套事务开始执行时,  它将取得一个 savepoint. 如果这个嵌套事务失败, 我们将回滚到此 savepoint. 潜套事务是外部事务的一部分, 只有外部事务结束后它才会被提交. </p>
+<p>比如我们设计ServiceA.methodA的事务级别为PROPAGATION_REQUIRED，ServiceB.methodB的事务级别为PROPAGATION_NESTED，那么当执行到ServiceB.methodB的时候，ServiceA.methodA所在的事务就会挂起，ServiceB.methodB会起一个<strong>新的子事务并设置savepoint</strong>，等待ServiceB.methodB的事务完成以后，他才继续执行。。因为ServiceB.methodB是外部事务的子事务，那么</p>
+<p>1、如果ServiceB.methodB已经提交，那么ServiceA.methodA失败回滚，ServiceB.methodB也将回滚。</p>
+<p>2、如果ServiceB.methodB失败回滚，如果他抛出的异常被ServiceA.methodA的try..catch捕获并处理，ServiceA.methodA事务仍然可能提交；如果他抛出的异常未被ServiceA.methodA捕获处理，ServiceA.methodA事务将回滚。</p>
+<p>理解Nested的关键是savepoint。他与PROPAGATION_REQUIRES_NEW的区别是：</p>
+<p>PROPAGATION_REQUIRES_NEW 完全是一个新的事务,它与外部事务相互独立； 而 PROPAGATION_NESTED 则是外部事务的子事务, 如果外部事务 commit, 嵌套事务也会被 commit, 这个规则同样适用于 roll back. </p>
+<h3 id="在-spring-中使用-PROPAGATION-NESTED的前提："><a href="#在-spring-中使用-PROPAGATION-NESTED的前提：" class="headerlink" title="在 spring 中使用 PROPAGATION_NESTED的前提："></a>在 spring 中使用 PROPAGATION_NESTED的前提：</h3><h4 id="1-我们要设置-transactionManager-的-nestedTransactionAllowed-属性为-true-注意-此属性默认为-false"><a href="#1-我们要设置-transactionManager-的-nestedTransactionAllowed-属性为-true-注意-此属性默认为-false" class="headerlink" title="1. 我们要设置 transactionManager 的 nestedTransactionAllowed 属性为 true, 注意, 此属性默认为 false!!!"></a>1. 我们要设置 transactionManager 的 nestedTransactionAllowed 属性为 true, 注意, 此属性默认为 false!!!</h4><h4 id="2-java-sql-Savepoint-必须存在-即-jdk-版本要-1-4"><a href="#2-java-sql-Savepoint-必须存在-即-jdk-版本要-1-4" class="headerlink" title="2. java.sql.Savepoint 必须存在, 即 jdk 版本要 1.4+"></a>2. java.sql.Savepoint 必须存在, 即 jdk 版本要 1.4+</h4><h4 id="3-Connection-getMetaData-supportsSavepoints-必须为-true-即-jdbc-drive-必须支持-JDBC-3-0"><a href="#3-Connection-getMetaData-supportsSavepoints-必须为-true-即-jdbc-drive-必须支持-JDBC-3-0" class="headerlink" title="3. Connection.getMetaData().supportsSavepoints() 必须为 true, 即 jdbc drive 必须支持 JDBC 3.0"></a>3. Connection.getMetaData().supportsSavepoints() 必须为 true, 即 jdbc drive 必须支持 JDBC 3.0</h4><p>确保以上条件都满足后, 你就可以尝试使用 PROPAGATION_NESTED 了. </p>
+<p>##############################################################################</p>
+<h1 id="Log-Service配置事务传播"><a href="#Log-Service配置事务传播" class="headerlink" title="Log Service配置事务传播"></a>Log Service配置事务传播</h1><p>不管业务逻辑的service是否有异常，Log Service都应该能够记录成功，通常有异常的调用更是用户关心的。Log Service如果沿用业务逻辑Service的事务的话在抛出异常时将没有办法记录日志(事实上是回滚了)。所以希望Log Service能够有独立的事务。日志和普通的服务应该具有不同的策略。Spring 配置文件transaction.xml:</p>
+<ol>
+<li><?xml version="1.0" encoding="UTF-8"?></li>
+<li><p>&lt;beans xmlns=”<a href="http://www.springframework.org/schema/beans&quot;" target="_blank" rel="noopener">http://www.springframework.org/schema/beans&quot;</a></p>
+</li>
+<li><p>xmlns:xsi=”<a href="http://www.w3.org/2001/XMLSchema-instance&quot;" target="_blank" rel="noopener">http://www.w3.org/2001/XMLSchema-instance&quot;</a> xmlns:aop=”<a href="http://www.springframework.org/schema/aop&quot;" target="_blank" rel="noopener">http://www.springframework.org/schema/aop&quot;</a></p>
+</li>
+<li><p>xmlns:tx=”<a href="http://www.springframework.org/schema/tx&quot;" target="_blank" rel="noopener">http://www.springframework.org/schema/tx&quot;</a></p>
+</li>
+<li><p>xsi:schemaLocation=”<a href="http://www.springframework.org/schema/beans" target="_blank" rel="noopener">http://www.springframework.org/schema/beans</a> <a href="http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" target="_blank" rel="noopener">http://www.springframework.org/schema/beans/spring-beans-2.0.xsd</a> <a href="http://www.springframework.org/schema/tx" target="_blank" rel="noopener">http://www.springframework.org/schema/tx</a> <a href="http://www.springframework.org/schema/tx/spring-tx-2.0.xsd" target="_blank" rel="noopener">http://www.springframework.org/schema/tx/spring-tx-2.0.xsd</a> <a href="http://www.springframework.org/schema/aop" target="_blank" rel="noopener">http://www.springframework.org/schema/aop</a> <a href="http://www.springframework.org/schema/aop/spring-aop-2.0.xsd&quot;&gt;" target="_blank" rel="noopener">http://www.springframework.org/schema/aop/spring-aop-2.0.xsd&quot;&gt;</a></p>
+</li>
+<li><p>**</p>
+</li>
+<li></li>
+<li><p>&lt;tx:advice id=”defaultTxAdvice” transaction-manager=”transactionManager”&gt;</p>
+</li>
+<li><p><a href="tx:attributes">tx:attributes</a></p>
+</li>
+<li><p>&lt;tx:method name=”get*” read-only=”true” /&gt;</p>
+</li>
+<li><p>&lt;tx:method name=”query*” read-only=”true” /&gt;</p>
+</li>
+<li><p>&lt;tx:method name=”find*” read-only=”true” /&gt;</p>
+</li>
+<li><p>&lt;tx:method name=”*” propagation=”REQUIRED” rollback-for=”java.lang.Exception” /&gt;</p>
+</li>
+<li><p></tx:attributes></p>
+</li>
+<li><p></tx:advice></p>
+</li>
+<li></li>
+<li><p>&lt;tx:advice id=”logTxAdvice” transaction-manager=”transactionManager”&gt;</p>
+</li>
+<li><p><a href="tx:attributes">tx:attributes</a></p>
+</li>
+<li><p>&lt;tx:method name=”get*” read-only=”true” /&gt;</p>
+</li>
+<li><p>&lt;tx:method name=”query*” read-only=”true” /&gt;</p>
+</li>
+<li><p>&lt;tx:method name=”find*” read-only=”true” /&gt;</p>
+</li>
+<li><p>&lt;tx:method name=”*” propagation=”REQUIRES_NEW”</p>
+</li>
+<li><p>rollback-for=”java.lang.Exception” /&gt;</p>
+</li>
+<li><p></tx:attributes></p>
+</li>
+<li><p></tx:advice></p>
+</li>
+<li></li>
+<li><p><a href="aop:config">aop:config</a></p>
+</li>
+<li><p>&lt;aop:pointcut id=”defaultOperation”</p>
+</li>
+<li><p>expression=”@within(com.homent.util.DefaultTransaction)” /&gt;</p>
+</li>
+<li><p>&lt;aop:pointcut id=”logServiceOperation”</p>
+</li>
+<li><p>expression=”execution(* com.homent.service.LogService.*(..))” /&gt;</p>
+</li>
+<li></li>
+<li><p>&lt;aop:advisor advice-ref=”defaultTxAdvice” pointcut-ref=”defaultOperation” /&gt;</p>
+</li>
+<li><p>&lt;aop:advisor advice-ref=”logTxAdvice” pointcut-ref=”logServiceOperation” /&gt;</p>
+</li>
+<li><p></aop:config></p>
+</li>
+<li></beans>
+
+<p>如上面的Spring配置文件所示，日志服务的事务策略配置为propagation=”REQUIRES_NEW”，告诉Spring不管上下文是否有事务，Log Service被调用时都要求一个完全新的只属于Log Service自己的事务。通过该事务策略，Log Service可以独立的记录日志信息，不再受到业务逻辑事务的干扰。</p>
+</li>
+</ol>
+
             </div>
             <hr/>
 
@@ -495,7 +616,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://rstring.top/2018/04/14/%E6%96%B0%E7%9A%84%E4%B8%80%E5%A4%A9/">http://rstring.top/2018/04/14/%E6%96%B0%E7%9A%84%E4%B8%80%E5%A4%A9/</a>
+                    <a href="http://rstring.top/2018/12/12/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E4%BA%8B%E5%8A%A1--Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6/">http://rstring.top/2018/12/12/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E4%BA%8B%E5%8A%A1--Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E4%BC%A0%E6%92%AD%E6%9C%BA%E5%88%B6/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -533,8 +654,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/%E9%9A%8F%E7%AC%94/">
-                                    <span class="chip bg-color">随笔</span>
+                                <a href="/tags/%E4%BA%8B%E5%8A%A1/">
+                                    <span class="chip bg-color">事务</span>
                                 </a>
                             
                         </div>
@@ -706,6 +827,52 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
+                <a href="/2019/04/12/%E6%97%A5%E6%9C%AC%E6%94%AF%E4%BB%98-%E6%89%AB%E7%A0%81%E6%94%AF%E4%BB%98%E8%83%8C%E5%90%8E%E7%9A%84%E6%94%AF%E4%BB%98%E6%96%B9%E5%BC%8F%E5%8F%8A%E5%90%88%E8%A7%84/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="日本支付-扫码支付背后的支付方式及合规">
+                        
+                        <span class="card-title">日本支付-扫码支付背后的支付方式及合规</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一直想给小伙伴们介绍一下日本的扫码支付，但是，因为题目过于庞大及涉及到的东西也太多，苦于自己所知及水平有限，一直处于在准备阶段。越准备发现需要了解的东西就越多。所以，打算分批分阶段一点点给大家分享一下。
+首先，和小伙伴们聊一聊日本的扫码支付
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-04-12
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            rstringzhang
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E4%B8%9A%E5%8A%A1%E6%9D%82%E8%B0%88/">
+                        <span class="chip bg-color">业务杂谈</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
                 <a href="/2018/04/14/%E4%B8%80%E6%9D%A1SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E5%BE%97%E5%BE%88%E6%85%A2%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F/">
                     <div class="card-image">
                         
@@ -723,9 +890,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2018-04-14
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2018-04-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -739,52 +906,6 @@
                     
                     <a href="/tags/sql/">
                         <span class="chip bg-color">sql</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
-            </div>
-            <div class="card">
-                <a href="/2018/04/14/%E6%96%B0%E7%9A%84%E4%B8%80%E5%A4%A9/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="新的一天">
-                        
-                        <span class="card-title">新的一天</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2018-04-14
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            rstringzhang
-                            
-                        </span>
-                    </div>
-                </div>
-
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/%E9%9A%8F%E7%AC%94/">
-                        <span class="chip bg-color">随笔</span>
                     </a>
                     
                 </div>
